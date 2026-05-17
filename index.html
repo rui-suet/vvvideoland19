@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>vv的小宇宙</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: "Helvetica", sans-serif;
+  background-color: #EAF7F4;
+  color: #4A3F35;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+/* 背景动效 */
+body::before {
+  content: "";
+  position: fixed;
+  width: 200%;
+  height: 200%;
+  background-size: 36px 36px; /* 间距变大 */
+  background-image: radial-gradient(#c8a27c 2px, transparent 2px); /* 点变大 */
+  opacity: 0.2;
+  animation: floatBg 30s linear infinite;
+  z-index: -1;
+}
+
+@keyframes floatBg {
+  from { transform: translate(0,0); }
+  to { transform: translate(-100px,-100px); }
+}
+
+/* 开场 */
+#start {
+  font-size: 24px;
+  line-height: 1.8;
+  transition: opacity 0.6s ease;
+
+  z-index: 10; /* ⭐关键 */
+}
+
+.button-group {
+  display: flex;
+  justify-content: center;
+  flex-wrap: nowrap; /* 不换行 */
+  gap: 10px;
+}
+
+/* 主界面 */
+#main {
+  display: none;
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.show {
+  animation: fadeIn 0.8s ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hint {
+  font-size: 12px;
+  color: #c8a27c;
+  margin-top: -5px;
+  margin-bottom: 10px;
+  opacity: 0.7;
+}
+
+/* 按钮呼吸 */
+button {
+  background-color: #7ED1C6;
+  border: none;
+  padding: 12px 20px;
+  margin: 10px;
+  border-radius: 20px;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  animation: breathe 3s infinite;
+}
+
+@keyframes breathe {
+  0%,100% { opacity: 0.9; }
+  50% { opacity: 1; }
+}
+
+button:hover {
+  background-color: #4A3F35;
+}
+
+/* 文本 */
+#output {
+  margin-top: 30px;
+  white-space: pre-line;
+  line-height: 1.8;
+}
+
+.drop-img {
+  margin-top: 10px;
+  max-width: 220px;
+  border-radius: 10px;
+}
+
+/* ⭐ */
+#starBelow {
+  margin-top: 20px;
+  font-size: 22px;
+  display: none;
+  cursor: pointer;
+}
+
+.blink {
+  animation: starBlink 1.5s infinite;
+}
+
+@keyframes starBlink {
+  0%,100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+#starHint {
+  font-size: 12px;
+  color: #c8a27c;
+  margin-top: 8px;
+  display: none;
+  opacity: 0.7;
+}
+
+/* 🎬 视频 */
+#videoBox {
+  margin-top: 20px;
+  display: none;
+  opacity: 0;
+}
+
+.showVideo {
+  animation: fadeVideo 1s ease forwards;
+}
+
+@keyframes fadeVideo {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+video {
+  max-width: 300px;
+  border-radius: 12px;
+}
+</style>
+</head>
+
+<body>
+
+<div id="start">
+  诶？这是什么地方？<br>
+  要点击空白处嘛？？？？
+</div>
+
+<div id="main">
+  <!-- 按钮一整行 -->
+  <div class="button-group">
+    <button onclick="cake()">🍰 点一下蛋糕</button>
+    <button onclick="mood()">🎧 今日心情</button>
+    <button onclick="randomDrop()">📦 随机掉落</button>
+    <button onclick="letter()">💌 打开一封信</button>
+  </div>
+  
+  <!-- 提示语放在按钮组下面 -->
+  <div class="hint" style="margin-top: 10px;">✨ 多点几下试试，说不定有其他掉落呢？</div>
+
+  <div id="output"></div>
+  <div id="starBelow" onclick="secret()">⭐</div>
+  <div id="starHint">嗯？有彩蛋吗？那在哪里呢？</div>
+
+  <!-- 🎬视频位置 -->
+  <div id="videoBox">
+    <video controls>
+      <source src="推し活香槟call4v.mp4" type="video/mp4">
+    </video>
+  </div>
+</div>
+
+  <div id="output"></div>
+  <div id="starBelow" onclick="secret()">⭐</div>
+  <div id="starHint">嗯？有彩蛋吗？那在哪里呢？</div>
+
+  <!-- 🎬视频位置（你自己填src） -->
+  <div id="videoBox">
+    <video controls>
+      <source src="推し活香槟call4v.mp4" type="video/mp4">
+    </video>
+  </div>
+</div>
+
+<script>
+
+/* 进入 */
+
+/* 进入 */
+window.onload = function() {
+  // 把监听器绑定给整个 document，这样点击屏幕任何地方都能触发了
+  document.addEventListener("click", enterPageOnce);
+};
+
+// 增加一个只触发一次的包裹函数，防止进入主页后点击空白处再次触发
+function enterPageOnce() {
+  enterPage();
+  // 进入后移除这个全局点击事件，避免影响主页其他操作
+  document.removeEventListener("click", enterPageOnce);
+}
+
+function enterPage() {
+  const start = document.getElementById("start");
+  const main = document.getElementById("main");
+
+  start.style.opacity = "0";
+
+  setTimeout(() => {
+    start.style.display = "none";
+    main.style.display = "block";
+    main.classList.add("show");
+  }, 600);
+
+
+}
+
+/* 🍰 */
+function cake() {
+  hideStar();
+  hideVideo();
+  document.getElementById("output").innerText =
+  "健身暂停！今天允许摄入甜食！";
+}
+
+/* 🎧 */
+const moods = [
+"今天的你：值得喝被请一杯奶茶",
+"今天的你：可以放下工作早睡1小时",
+"今天的你：快去金沙湖看日落",
+"今天的你：请买一张去合肥的车票",
+"今天的你：请来zufe找我吃饭",
+"今天的你：必须去教学楼下摸摸小猫",
+"今天的你：最好现在去听一次ode to love",
+"今天的你：要大冒险给俞锋发一张自拍，不行的话给我发10张"
+];
+
+function mood() {
+  hideStar();
+  hideVideo();
+  const random = moods[Math.floor(Math.random() * moods.length)];
+  document.getElementById("output").innerText = random;
+}
+
+/* 📦 */
+
+const drops = [
+  { type: "text", content: "我要吃滨寿司！" },
+  { type: "text", content: "今天我96斤啦！！！" },
+  { type: "text", content: "去盒马吃三明治！" },
+  { type: "text", content: "去黄山吧～" },
+  { type: "text", content: "奶油火鸡面不放奶油…？" },
+  { type: "text", content: "爆破专家我吃吃吃吃吃吃吃吃吃吃吃吃吃！" },
+  { type: "text", content: "小烟熏赢麻了^ ^" },
+  { type: "text", content: "我们都在用力滴活着" },
+  { type: "text", content: "我们马上要成为会计师了好吗" },
+  { type: "text", content: "求泳帽不变尖教程！" },
+  { type: "text", content: "我不行了。。" },
+  { type: "text", content: "12306我恨你" },
+  { type: "text", content: "保持眼睛干燥。保持苹果肌扁平。" },
+  { type: "text", content: "💣💩" },
+  { type: "text", content: "好利来真不会做生意。" },
+  { type: "text", content: "海底捞你的兵来了！" },
+  { type: "text", content: "你的背包～～～～～" },
+  { type: "text", content: "满意hk的礼物吗……(^L^)" },
+
+  { type: "img", content: "vvv1.jpg" },
+  { type: "img", content: "vvv2.jpg" },
+  { type: "img", content: "vvv3.jpg" },
+  { type: "img", content: "vvv4.jpg" },
+  { type: "img", content: "vvv5.jpg" },
+  { type: "img", content: "vvv6.jpg" },
+  { type: "img", content: "vvv7.jpg" },
+  { type: "img", content: "vvv8.jpg" },
+  { type: "img", content: "vvv9.jpg" },
+  { type: "img", content: "vvv10.jpg" },
+  { type: "img", content: "vvv11.jpg" },
+  { type: "img", content: "vvv12.jpg" },
+  { type: "img", content: "vvv13.jpg" },
+  { type: "img", content: "vvv14.jpg" },
+  { type: "img", content: "vvv15.jpg" },
+  { type: "img", content: "vvv16.jpg" }
+];
+
+
+function randomDrop() {
+  hideStar();
+  hideVideo();
+
+  const random = drops[Math.floor(Math.random() * drops.length)];
+
+  if (random.type === "text") {
+    document.getElementById("output").innerText = random.content;
+  } else if (random.type === "img") {
+    document.getElementById("output").innerHTML =
+      "<img src='" + random.content + "' class='drop-img'>";
+  }
+}
+
+
+/* 💌 */
+function letter() {
+  hideStar();
+  hideVideo();
+
+  document.getElementById("output").innerText =
+`不知不觉，是给vv过的第三个生日啦。
+所以vv是3岁。
+开玩笑，作为19岁的前辈，
+我想告诉你，
+19岁一定比18岁精彩太多，
+世界属于你。
+而且19，
+是青春里球衣的号码嘛^_^
+生日快乐，vv`;
+
+  setTimeout(() => {
+    const star = document.getElementById("starBelow");
+    const hint = document.getElementById("starHint");
+
+    star.style.display = "block";
+    hint.style.display = "block";
+    star.classList.add("blink");
+  }, 5000);
+}
+
+/* ⭐最终彩蛋（文字+视频一起） */
+function secret() {
+  document.getElementById("output").innerText =
+  "在这里吃了蛋糕，那么吃饭的时候…？";
+
+  const video = document.getElementById("videoBox");
+  video.style.display = "block";
+  video.classList.add("showVideo");
+}
+
+/* 工具 */
+function hideStar() {
+  const star = document.getElementById("starBelow");
+  star.style.display = "none";
+  star.classList.remove("blink");
+  document.getElementById("starHint").style.display = "none";
+}
+
+function hideVideo() {
+  const video = document.getElementById("videoBox");
+  video.style.display = "none";
+  video.classList.remove("showVideo");
+}
+
+</script>
+
+</body>
+</html>
