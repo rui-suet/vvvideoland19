@@ -18,8 +18,29 @@ body {
   height: 100vh;
   cursor: pointer;
   overflow: hidden;
+  text-align: center;
+  margin: 0;
+  background: linear-gradient(135deg, #ffe6f0, #e6f7ff);
+  font-family: Arial;
 }
 
+h1 {
+  font-size: 64px;
+  color: transparent;
+  -webkit-text-stroke: 1.5px white;
+  letter-spacing: 2px;
+  font-weight: 300;
+  text-shadow: 0 0 10px rgba(255,255,255,0.3);
+  
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+  100% { transform: translateY(0px); }
+}
+  
 /* 背景动效 */
 body::before {
   content: "";
@@ -113,6 +134,20 @@ button:hover {
   border-radius: 10px;
 }
 
+img {
+  width: 80%;
+  border-radius: 16px;
+  margin: 20px auto;
+}
+
+img {
+  transition: transform 0.3s ease;
+}
+
+img:hover {
+  transform: scale(1.05);
+}
+  
 /* ⭐ */
 #starBelow {
   margin-top: 20px;
@@ -162,7 +197,10 @@ video {
 </head>
 
 <body>
-
+  
+<h1>Happy Birthday, my vv</h1>
+<p>for all the little moments that make you you</p>
+  
 <div id="start">
   诶？这是什么地方？<br>
   要点击空白处嘛？？？？
