@@ -254,11 +254,24 @@ video {
 </div>
 
 <script>
-window.onload = function() {
-  // 绑定全局点击事件用于开场进入
-  document.addEventListener("click", enterPageOnce);
-};
+  const preloadImages = [
+  "vvv1.jpg", "vvv2.jpg", "vvv3.jpg", "vvv4.jpg", "vvv5.jpg", 
+  "vvv6.jpg", "vvv7.jpg", "vvv8.jpg", "vvv9.jpg", "vvv10.jpg",
+  "vvv11.jpg", "vvv12.jpg", "vvv13.jpg", "vvv14.jpg", "vvv15.jpg", "vvv16.jpg"
+];
 
+// 👇 2. 替换你原本的整个 window.onload
+window.onload = function() {
+  // 绑定全局点击事件用于开场进入（原本就有的逻辑）
+  document.addEventListener("click", enterPageOnce);
+  
+  // 🔥 核心：网页一打开，趁着用户还在看第一页，就让浏览器在后台偷偷下载所有照片
+  preloadImages.forEach(function(src) {
+    const img = new Image();
+    img.src = src; 
+  });
+};
+  
 function enterPageOnce() {
   enterPage();
   document.removeEventListener("click", enterPageOnce);
