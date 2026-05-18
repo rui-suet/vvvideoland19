@@ -6,7 +6,6 @@
 <title>vv的小宇宙</title>
 
 <style>
-
 body {
   margin: 0;
   font-family: Arial;
@@ -15,21 +14,39 @@ body {
   text-align: center;
   min-height: 100vh;
   cursor: pointer;
-  overflow: hidden;
+  overflow-y: auto; /* ⭐ 如果抽到长图，允许有滚动条，体验更好 */
+  overflow-x: hidden;
   display: flex;
   justify-content: center; /* 水平居中 */
   align-items: center;     /* 垂直居中 */
 }
 
-h1 {
+/* 清除默认边距，保证第一页完美居中 */
+h1, p {
   margin: 0;
+  padding: 0;
+}
+
+/* 给第一页加一个独立包裹框，确保其在body中被当成一个整体完美全屏居中 */
+#welcome-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: opacity 0.6s ease;
+}
+
+p {
+  margin-top: 15px; /* 让小字和标题产生一点点好看的间距 */
+  font-size: 18px;
+}
+
+h1 {
   font-size: 64px;
   color: transparent;
   -webkit-text-stroke: 1.5px white;
   letter-spacing: 2px;
   font-weight: 300;
   text-shadow: 0 0 10px rgba(255,255,255,0.3);
-  
   animation: float 3s ease-in-out infinite;
 }
 
@@ -43,6 +60,7 @@ h1 {
 body::before {
   content: "";
   position: fixed;
+  left: 0; top: 0;
   width: 200%;
   height: 200%;
   background-size: 36px 36px; /* 间距变大 */
@@ -57,19 +75,18 @@ body::before {
   to { transform: translate(-100px,-100px); }
 }
 
-/* 开场 */
+/* 开场提示 */
 #start {
+  margin-top: 35px; /* 提示字往下稍微挪一点 */
   font-size: 24px;
   line-height: 1.8;
-  transition: opacity 0.6s ease;
-
-  z-index: 10; /* ⭐关键 */
+  opacity: 0.8;
 }
 
 .button-group {
   display: flex;
   justify-content: center;
-  flex-wrap: nowrap; /* 不换行 */
+  flex-wrap: wrap; /* ⭐ 手机屏幕小的时候允许换行，更好看 */
   gap: 10px;
 }
 
@@ -78,9 +95,13 @@ body::before {
   display: none;
   opacity: 0;
   transform: translateY(10px);
+  /* 为了让第二页在body里也完美居中，当它显示时我们也采用flex列布局 */
+  flex-direction: column;
+  align-items: center;
 }
 
 .show {
+  display: flex !important; /* 激活时强制使用flex排列 */
   animation: fadeIn 0.8s ease forwards;
 }
 
@@ -92,7 +113,7 @@ body::before {
 .hint {
   font-size: 12px;
   color: #c8a27c;
-  margin-top: -5px;
+  margin-top: 10px;
   margin-bottom: 10px;
   opacity: 0.7;
 }
@@ -102,12 +123,13 @@ button {
   background-color: #7ED1C6;
   border: none;
   padding: 12px 20px;
-  margin: 10px;
+  margin: 5px;
   border-radius: 20px;
   color: white;
   font-size: 14px;
   cursor: pointer;
   animation: breathe 3s infinite;
+  transition: background-color 0.3s;
 }
 
 @keyframes breathe {
@@ -124,6 +146,7 @@ button:hover {
   margin-top: 30px;
   white-space: pre-line;
   line-height: 1.8;
+  max-width: 90vw; /* 限制宽度防止手机上溢出 */
 }
 
 .drop-img {
@@ -134,11 +157,9 @@ button:hover {
 
 img {
   width: 80%;
+  max-width: 300px;
   border-radius: 16px;
   margin: 20px auto;
-}
-
-img {
   transition: transform 0.3s ease;
 }
 
@@ -146,7 +167,7 @@ img:hover {
   transform: scale(1.05);
 }
   
-/* ⭐ */
+/* ⭐ 彩蛋 */
 #starBelow {
   margin-top: 20px;
   font-size: 22px;
@@ -196,28 +217,32 @@ video {
 
 <body>
   
-<h1>Happy Birthday, my vv</h1>
-<p>for all the little moments that make you you</p>
-  
-<div id="start">
-  诶？这是什么地方？<br>
-  要点击空白处嘛？？？？
+<!-- 🌟 这里增加了大包裹框，把第一页内容打包，解决了偏上不居中的问题 -->
+<div id="welcome-section">
+  <h1>Happy Birthday, my vv</h1>
+  <p>for all the little moments that make you you</p>
+   
+  <div id="start">
+    诶？这是什么地方？<br>
+    要点击空白处嘛？？？？
+  </div>
 </div>
 
+<!-- 主内容区域（移除了之前不小心重复复制的代码段） -->
 <div id="main">
   <!-- 按钮一整行 -->
   <div class="button-group">
-    <button onclick="cake()">🍰 点一下蛋糕</button>
-    <button onclick="mood()">🎧 今日心情</button>
-    <button onclick="randomDrop()">📦 随机掉落</button>
-    <button onclick="letter()">💌 打开一封信</button>
+    <button onclick="cake(event)">🍰 点一下蛋糕</button>
+    <button onclick="mood(event)">🎧 今日心情</button>
+    <button onclick="randomDrop(event)">📦 随机掉落</button>
+    <button onclick="letter(event)">💌 打开一封信</button>
   </div>
   
   <!-- 提示语放在按钮组下面 -->
-  <div class="hint" style="margin-top: 10px;">✨ 多点几下试试，说不定有其他掉落呢？</div>
+  <div class="hint">✨ 多点几下试试，说不定有其他掉落呢？</div>
 
   <div id="output"></div>
-  <div id="starBelow" onclick="secret()">⭐</div>
+  <div id="starBelow" onclick="secret(event)">⭐</div>
   <div id="starHint">嗯？有彩蛋吗？那在哪里呢？</div>
 
   <!-- 🎬视频位置 -->
@@ -228,61 +253,41 @@ video {
   </div>
 </div>
 
-  <div id="output"></div>
-  <div id="starBelow" onclick="secret()">⭐</div>
-  <div id="starHint">嗯？有彩蛋吗？那在哪里呢？</div>
-
-  <!-- 🎬视频位置（你自己填src） -->
-  <div id="videoBox">
-    <video controls>
-      <source src="推し活香槟call4v.mp4" type="video/mp4">
-    </video>
-  </div>
-</div>
-
 <script>
-
-/* 进入 */
-
-/* 进入 */
 window.onload = function() {
-  // 把监听器绑定给整个 document，这样点击屏幕任何地方都能触发了
+  // 绑定全局点击事件用于开场进入
   document.addEventListener("click", enterPageOnce);
 };
 
-// 增加一个只触发一次的包裹函数，防止进入主页后点击空白处再次触发
 function enterPageOnce() {
   enterPage();
-  // 进入后移除这个全局点击事件，避免影响主页其他操作
   document.removeEventListener("click", enterPageOnce);
 }
 
 function enterPage() {
-  const start = document.getElementById("start");
+  const welcome = document.getElementById("welcome-section");
   const main = document.getElementById("main");
 
-  start.style.opacity = "0";
+  // 让第一页文字整体淡出
+  welcome.style.opacity = "0";
 
   setTimeout(() => {
-    start.style.display = "none";
-    main.style.display = "block";
-    main.classList.add("show");
+    welcome.style.display = "none"; // 彻底移除第一页文字
+    main.classList.add("show");     // 优雅淡入第二页的四个按钮并完美居中
   }, 600);
-
-
 }
 
 /* 🍰 */
-function cake() {
+function cake(e) {
+  e.stopPropagation(); // 阻止事件冒泡
   hideStar();
   hideVideo();
-  document.getElementById("output").innerText =
-  "健身暂停！今天允许摄入甜食！";
+  document.getElementById("output").innerText = "健身暂停！今天允许摄入甜食！";
 }
 
 /* 🎧 */
 const moods = [
-"今天的你：值得喝被请一杯奶茶",
+"今天的你：值得被请喝一杯奶茶",
 "今天的你：可以放下工作早睡1小时",
 "今天的你：快去金沙湖看日落",
 "今天的你：请买一张去合肥的车票",
@@ -292,7 +297,8 @@ const moods = [
 "今天的你：要大冒险给俞锋发一张自拍，不行的话给我发10张"
 ];
 
-function mood() {
+function mood(e) {
+  e.stopPropagation();
   hideStar();
   hideVideo();
   const random = moods[Math.floor(Math.random() * moods.length)];
@@ -300,7 +306,6 @@ function mood() {
 }
 
 /* 📦 */
-
 const drops = [
   { type: "text", content: "我要吃滨寿司！" },
   { type: "text", content: "今天我96斤啦！！！" },
@@ -339,8 +344,8 @@ const drops = [
   { type: "img", content: "vvv16.jpg" }
 ];
 
-
-function randomDrop() {
+function randomDrop(e) {
+  e.stopPropagation();
   hideStar();
   hideVideo();
 
@@ -349,14 +354,13 @@ function randomDrop() {
   if (random.type === "text") {
     document.getElementById("output").innerText = random.content;
   } else if (random.type === "img") {
-    document.getElementById("output").innerHTML =
-      "<img src='" + random.content + "' class='drop-img'>";
+    document.getElementById("output").innerHTML = "<img src='" + random.content + "' class='drop-img'>";
   }
 }
 
-
 /* 💌 */
-function letter() {
+function letter(e) {
+  e.stopPropagation();
   hideStar();
   hideVideo();
 
@@ -381,30 +385,33 @@ function letter() {
   }, 5000);
 }
 
-/* ⭐最终彩蛋（文字+视频一起） */
-function secret() {
-  document.getElementById("output").innerText =
-  "在这里吃了蛋糕，那么吃饭的时候…？";
+/* ⭐最终彩蛋 */
+function secret(e) {
+  e.stopPropagation();
+  document.getElementById("output").innerText = "在这里吃了蛋糕，那么吃饭的时候…？";
 
   const video = document.getElementById("videoBox");
   video.style.display = "block";
   video.classList.add("showVideo");
 }
 
-/* 工具 */
+/* 工具函数 */
 function hideStar() {
   const star = document.getElementById("starBelow");
   star.style.display = "none";
   star.classList.remove("blink");
+
   document.getElementById("starHint").style.display = "none";
 }
 
+// 隐藏视频并暂停播放
 function hideVideo() {
-  const video = document.getElementById("videoBox");
-  video.style.display = "none";
-  video.classList.remove("showVideo");
+  const videoBox = document.getElementById("videoBox");
+  videoBox.style.display = "none";
+  videoBox.classList.remove("showVideo");
+  const v = videoBox.querySelector("video");
+  if(v) { v.pause(); }
 }
-
 </script>
 
 </body>
